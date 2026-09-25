@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+import csv,io,json,urllib.request
+from research.model import LABELS,confusion_metrics,disagreement_counts,review_capture
+BASE='https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/'
+def get(name):return list(csv.DictReader(io.StringIO(urllib.request.urlopen(BASE+name).read().decode('utf-8-sig'))))
+gold=get('eTour_gold.csv'); pred=get('eTour_best.csv'); metrics=confusion_metrics(gold,pred); counts=disagreement_counts(gold,pred); capture=review_capture(counts)
+summary={'study':'Requirements Classification Evidence Triage on a Gold-Standard Benchmark','headline_metrics':{'n_requirement_elements':len(gold),'f1_function':round(metrics['Function']['f1'],3),'f1_behavior':round(metrics['Behavior']['f1'],3),'f1_data':round(metrics['Data']['f1'],3),'f1_F':round(metrics['F']['f1'],3),'f1_user_related':round(metrics['UserRelated']['f1'],3),'total_label_errors_across_5_fields':sum(counts),'top_100_review_error_capture_share':round(capture[100][1],3)},'finding':'Across the five evaluated labels, performance is heterogeneous: F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; prioritizing the 100 requirement elements with the most five-label disagreements concentrates 277 of them (51.9%), supporting targeted human review rather than uniform review.','source':'eTour requirements-classification benchmark (CoEST-derived; FTLR replication package)','retrieved':'2026-09-25'}
+print(json.dumps({'summary':summary,'metrics':metrics,'review_capture':{str(k):{'errors':v[0],'share':v[1]} for k,v in capture.items()}},indent=2))

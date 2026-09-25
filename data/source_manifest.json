@@ -1,0 +1,15 @@
+{
+  "study_title": "Requirements Classification Evidence Triage on a Gold-Standard Benchmark",
+  "design": "Secondary benchmark evaluation with disagreement-priority human review",
+  "retrieved_for_analysis": "2026-09-25",
+  "source_name": "eTour fine-grained requirements-classification benchmark in the FTLR replication package",
+  "source_page": "https://github.com/tobhey/finegrained-traceability",
+  "direct_data_url": "https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/eTour_gold.csv ; https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/eTour_best.csv",
+  "doi": "10.5281/zenodo.7867846",
+  "license_note": "Gold-standard requirements-classification dataset: CC BY 4.0 (Zenodo DOI 10.5281/zenodo.7867846). Automatic predictions are taken from the cited FTLR replication repository.",
+  "raw_data_redistributed": false,
+  "derived_empirical_results_in_repository": true,
+  "claim_boundary": "The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.",
+  "repository_slug": "requirements_evidence_triage",
+  "supersedes_prototype_slug": "verification_evidence_optimizer"
+}

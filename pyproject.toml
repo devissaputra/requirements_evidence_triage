@@ -1,0 +1,10 @@
+[project]
+name = "requirements-evidence-triage"
+version = "1.0.0"
+description = "Empirical requirements-classification triage study using eTour gold-standard labels and automatic predictions."
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

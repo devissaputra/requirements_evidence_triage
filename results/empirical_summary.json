@@ -1,0 +1,16 @@
+{
+  "study": "Requirements Classification Evidence Triage on a Gold-Standard Benchmark",
+  "headline_metrics": {
+    "n_requirement_elements": 571,
+    "f1_function": 0.834,
+    "f1_behavior": 0.839,
+    "f1_data": 0.746,
+    "f1_F": 0.945,
+    "f1_user_related": 0.653,
+    "total_label_errors_across_5_fields": 534,
+    "top_100_review_error_capture_share": 0.519
+  },
+  "finding": "Across the five evaluated labels, performance is heterogeneous: F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; prioritizing the 100 requirement elements with the most five-label disagreements concentrates 277 of them (51.9%), supporting targeted human review rather than uniform review.",
+  "source": "eTour requirements-classification benchmark (CoEST-derived; FTLR replication package)",
+  "retrieved": "2026-09-25"
+}
