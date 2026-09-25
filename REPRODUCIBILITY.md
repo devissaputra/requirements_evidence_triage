@@ -7,14 +7,18 @@ pytest -q
 python run_demo.py
 ```
 
-Offline tests operate on packaged derived evidence and study-specific pure functions.
+Tests recompute all five confusion matrices and the oracle/deployable/random review curves from the complete 571-row derived evidence.
 
-## Full source rebuild
+## Pinned-source rebuild
 ```bash
-python scripts/fetch_and_analyze.py
+python scripts/fetch_and_analyze.py --check
 ```
 
-The rebuild requires internet access and retrieves the source recorded in `data/source_manifest.json`. It intentionally does not substitute generated observations if retrieval fails.
+The rebuild retrieves exact commit-pinned source files, prints SHA-256 hashes for both, reconstructs the full derived evidence, and fails on any released-result mismatch.
 
-## Reproducibility boundary
-External sources can change or move. The manifest records the source identity, DOI/version where available, retrieval date, and reuse note. Derived results in this release correspond to the source state retrieved on 2026-09-25.
+## Figures
+```bash
+python scripts/generate_figures.py --out-dir /tmp/requirements_figures
+```
+
+CI smoke-tests generation and XML validity for all five SVGs.

@@ -1,24 +1,25 @@
 # Analysis Plan
 
 ## Status
-This file documents the analysis released in this repository. It is **not a preregistration** and should not be described as one.
+This file documents the released analysis. It is **not a preregistration**.
 
-## Primary estimand / descriptive target
-Where does automatic fine-grained requirement classification fail on a gold-standard benchmark, and how concentrated are those errors under a limited human-review budget?
+## RQ1
+Evaluate Function, Behavior, Data, F, and UserRelated using confusion matrices, precision, recall, and F1.
 
-## Analysis
-Join gold-standard and automatic rows by requirement-element ID. For the five labels explicitly evaluated by the FTLR experiment (Function, Behavior, Data, F, UserRelated), compute confusion matrices and F1. Count per-element disagreements across those five labels, sort descending, and measure cumulative error capture at review budgets of 10, 25, 50, and 100 elements.
+## RQ2
+Compute per-item gold-vs-prediction disagreement counts and rank descending. Report capture at budgets 10, 25, 50, and 100. Because the ranking uses gold labels, interpret it only as an oracle upper bound.
 
-## Specified outputs for this release
-1. source/sample size and provenance;
-2. primary derived metric(s);
-3. comparator, cross-group, cross-time, or frontier contrast where applicable;
-4. uncertainty, sensitivity, or error information supported by the source;
-5. explicit construct and external-validity limitations.
+## RQ3
+Construct a deployable ranking without gold labels using prediction-pattern rarity. Rarer five-label outputs rank first; prediction-only hierarchy inconsistency, predicted label density, and ID are deterministic tie-breakers.
 
-## Missingness / exclusions
+## Comparator
+Uniform random review has expected error-capture share k/N at budget k.
 
-Gold and automatic files are joined by the 571 shared requirement-element IDs. Evaluation is restricted to Function, Behavior, Data, F, and UserRelated because those five labels have meaningful automatic predictions in this benchmark. No missing labels are imputed.
+## Outputs
+Complete 571-row derived evaluation evidence, five-label confusion/F1 results, oracle/deployable/random curves, enrichment versus random expectation, and explicit validity boundaries.
 
-## Interpretation boundary
-The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+## Exclusions
+`functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the supplied automatic eTour output is degenerate for those fields.
+
+## Interpretation
+The prediction-only heuristic is exploratory and post hoc; no external-validation or optimality claim is made.

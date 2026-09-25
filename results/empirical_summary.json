@@ -8,9 +8,13 @@
     "f1_F": 0.945,
     "f1_user_related": 0.653,
     "total_label_errors_across_5_fields": 534,
-    "top_100_review_error_capture_share": 0.519
+    "oracle_top_100_error_capture_share": 0.519,
+    "deployable_top_100_error_capture_share": 0.215,
+    "random_expected_top_100_error_capture_share": 0.175,
+    "deployable_top_100_enrichment_vs_random": 1.23
   },
-  "finding": "Across the five evaluated labels, performance is heterogeneous: F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; prioritizing the 100 requirement elements with the most five-label disagreements concentrates 277 of them (51.9%), supporting targeted human review rather than uniform review.",
-  "source": "eTour requirements-classification benchmark (CoEST-derived; FTLR replication package)",
+  "finding": "Classification quality is heterogeneous across the five evaluated labels. A gold-label oracle can concentrate 51.9% of all label errors into 100 items, but that is an upper bound rather than a deployable policy. A prediction-only pattern-rarity heuristic captures 115 of 534 errors (21.5%) in the top 100, versus 17.5% expected under uniform random review (1.23× enrichment).",
+  "source": "eTour requirements-classification benchmark and NoRBERT predictions from the FTLR replication package",
+  "source_commit": "02682a0d3cb2fb991942c2d88d11e03221f30f87",
   "retrieved": "2026-09-25"
 }

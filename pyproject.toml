@@ -1,7 +1,7 @@
 [project]
 name = "requirements-evidence-triage"
-version = "1.0.0"
-description = "Empirical requirements-classification triage study using eTour gold-standard labels and automatic predictions."
+version = "1.1.0"
+description = "Empirical requirements-classification evaluation with oracle and prediction-only human-review triage."
 requires-python = ">=3.10"
 dependencies = []
 

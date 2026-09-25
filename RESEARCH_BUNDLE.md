@@ -1,18 +1,18 @@
 # Research Bundle Definition
 
-This repository is treated as a research bundle because it links one explicit research question to a named empirical source, a documented operationalization, executable analysis code, derived evidence, reproducibility checks, visual evidence, validity boundaries, and a paper-ready interpretation path.
-
-## Question
-Where does automatic fine-grained requirement classification fail on a gold-standard benchmark, and how concentrated are those errors under a limited human-review budget?
+This bundle links a requirements-engineering decision problem to a pinned empirical source, complete derived evidence, executable analysis, explicit oracle/deployable separation, reproducibility checks, tests, figures, and bounded interpretation.
 
 ## Empirical core
-Five-label confusion analysis and disagreement-priority review allocation.
+Five-label requirements-classification evaluation plus review-routing analysis.
 
-## Main result
-Across the five evaluated labels, F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; reviewing the 100 elements with the most five-label disagreements concentrates 277 of them (51.9%).
+## Scientific correction
+The 51.9% gold-error ranking is an **oracle upper bound**, not a deployable triage policy. Operational triage is evaluated separately using prediction-only pattern rarity.
 
-## Boundary
-The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+## Main result at budget 100
+- oracle: 277/534 errors, 51.9%;
+- prediction-only: 115/534, 21.5%;
+- random expected: 17.5%;
+- prediction-only enrichment: 1.23×.
 
 ## Release criterion
-A release passes only if source provenance, code, derived tables, JSON summary, README claims, figures, and tests agree numerically and semantically.
+Source pinning, evidence, code, tables, JSON, figures, tests, CI, and documentation must agree numerically and semantically.

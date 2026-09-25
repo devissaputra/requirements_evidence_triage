@@ -1,98 +1,95 @@
 # Requirements Classification Evidence Triage on a Gold-Standard Benchmark
 
-> **Empirical Research Bundle** · **Portfolio Track: Engineering Management Research** · Systems Engineering / Requirements Engineering / Human Review
+> **Empirical Research Bundle** · **Portfolio Track: Engineering Management Research** · Requirements Engineering / Human-in-the-Loop Review / Evidence Triage
 
-Empirical eTour benchmark study of five requirement-element labels, classification error structure, and budgeted human-review triage.
+A reproducible secondary study of 571 eTour requirement elements that separates **classification quality**, an **oracle review-efficiency ceiling**, and a **deployable prediction-only triage heuristic**.
 
 ![Empirical workflow](assets/architecture.svg)
 
 ## Study status
 
-**Completed secondary empirical analysis.** Reported findings were calculated from the named public source on 25 September 2026. The rebuild script contains **no synthetic fallback**. Raw source data are not republished unless source terms permit it; `data/source_manifest.json` records provenance, retrieval details, licensing notes, and the claim boundary.
+**Completed secondary empirical analysis with deployable-vs-oracle triage evaluation.** The source is pinned to FTLR replication commit `02682a0d3cb2fb991942c2d88d11e03221f30f87`, so the benchmark cannot silently change when an upstream branch moves.
 
-## Research question
+## Research questions
 
-> Where does automatic fine-grained requirement classification fail on a gold-standard benchmark, and how concentrated are those errors under a limited human-review budget?
+1. Where does automatic fine-grained requirements classification fail across Function, Behavior, Data, F, and UserRelated?
+2. How concentrated are those errors under a gold-label oracle review queue?
+3. Can a review queue built only from automatic predictions capture more errors than uniform random review?
 
-## Design
+## Source
 
-- **Design:** Secondary benchmark evaluation with disagreement-priority human review
-- **Source:** eTour fine-grained requirements-classification benchmark in the FTLR replication package
-- **Source page:** https://github.com/tobhey/finegrained-traceability
-- **Direct data endpoint:** `https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/eTour_gold.csv ; https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/eTour_best.csv`
-- **Retrieval / analysis date:** 2026-09-25
-- **Licensing / reuse note:** Gold-standard requirements-classification dataset: CC BY 4.0 (Zenodo DOI 10.5281/zenodo.7867846). Automatic predictions are taken from the cited FTLR replication repository.
+- **Gold-standard dataset:** eTour subset of *Dataset for Requirements Classification in Traceability Link Recovery Datasets*
+- **Gold dataset DOI:** concept DOI `10.5281/zenodo.7867845`; versioned Zenodo record `10.5281/zenodo.7867846`
+- **Automatic classifications:** NoRBERT for TLR / FTLR replication outputs
+- **NoRBERT artifact:** concept DOI `10.5281/zenodo.8348363`
+- **Pinned replication commit:** `02682a0d3cb2fb991942c2d88d11e03221f30f87`
+- **Analysis date:** 2026-09-25
 
-## Hypotheses
+## Classification results
 
-1. H1: classification quality differs substantially across the five evaluated labels (Function, Behavior, Data, F, UserRelated).
-2. H2: UserRelated evidence has materially lower recall than the broad F label.
-3. H3: disagreement-priority review captures a disproportionate share of five-label errors within a fixed review budget.
+| Label | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| Function | 0.790 | 0.883 | 0.834 |
+| Behavior | 0.744 | 0.962 | 0.839 |
+| Data | 0.701 | 0.796 | 0.746 |
+| F | 0.899 | 0.996 | 0.945 |
+| UserRelated | 0.933 | 0.502 | 0.653 |
 
-## Empirical method
+The largest weakness is **UserRelated recall (0.502)**, while the broad `F` label reaches **0.945 F1**.
 
-Join gold-standard and automatic rows by requirement-element ID. For the five labels explicitly evaluated by the FTLR experiment (Function, Behavior, Data, F, UserRelated), compute confusion matrices and F1. Count per-element disagreements across those five labels, sort descending, and measure cumulative error capture at review budgets of 10, 25, 50, and 100 elements.
+![Classification evidence](assets/research_design.svg)
 
-![Method](assets/method.svg)
+## Human-review triage
 
-## Headline empirical finding
+The original prototype ranked items by their **actual gold-vs-prediction errors**. That ranking is retained only as an **oracle upper bound** because it uses the answer key and cannot be deployed before review.
 
-Across the five evaluated labels, F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; reviewing the 100 elements with the most five-label disagreements concentrates 277 of them (51.9%).
+This release adds a prediction-only heuristic: **prediction-pattern rarity**. It ranks uncommon five-label prediction patterns first, then uses prediction-only hierarchy inconsistency and label density as deterministic tie-breakers. Gold labels are used only afterward to evaluate the queue.
 
-### Headline metrics
+| Review budget | Oracle error capture | Prediction-only capture | Random expected | Prediction-only enrichment |
+|---:|---:|---:|---:|---:|
+| 10 | 7.1% | 3.4% | 1.8% | 1.93× |
+| 25 | 15.5% | 6.4% | 4.4% | 1.45× |
+| 50 | 29.6% | 12.2% | 8.8% | 1.39× |
+| 100 | 51.9% | 21.5% | 17.5% | 1.23× |
 
-- **n requirement elements**: 571
-- **f1 function**: 0.834
-- **f1 behavior**: 0.839
-- **f1 data**: 0.746
-- **f1 F**: 0.945
-- **f1 user related**: 0.653
-- **total label errors across 5 fields**: 534
-- **top 100 review error capture share**: 0.519
+The deployable heuristic is **exploratory and post hoc**. It beats the expected uniform-random capture rate on this benchmark, but it is not claimed to be externally validated or optimal.
 
-The packaged derived tables are documented in `docs/data_dictionary.md`. That document states explicitly whether each CSV is a complete analysis table or a diagnostic subset.
+![Triage comparison](assets/triage.svg)
 
-![Research evidence](assets/research_design.svg)
+## Claim boundary
 
-## What this study can and cannot claim
+**Can claim:** the five confusion matrices reproduce from the pinned public source; there are 534 five-label errors; the 51.9% result is an oracle ceiling; the prediction-only queue captures 115 errors in its top 100 versus 17.5% expected under uniform random review.
 
-**Can claim:** the computations in this repository summarize the named public dataset under the documented operationalization.
+**Cannot claim:** that the oracle queue is operational, that pattern rarity is optimal or externally validated, or that requirement-element classification is equivalent to end-to-end system verification.
 
-**Cannot claim:** The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+The four source fields `functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the supplied automatic eTour file is degenerate for those fields.
 
-![Finding and boundary](assets/evaluation.svg)
+![Evidence boundary](assets/evaluation.svg)
 
 ## Reproduce
-
-Offline verification of packaged empirical results:
 
 ```bash
 python -m pip install -r requirements.txt
 pytest -q
 python run_demo.py
+python scripts/generate_figures.py --out-dir /tmp/requirements_figures
+python scripts/fetch_and_analyze.py --check
 ```
 
-Recompute the empirical analysis from the public source (internet required):
-
-```bash
-python scripts/fetch_and_analyze.py
-```
-
-The online rebuild calls study-specific functions from `research/model.py`; the tests exercise those functions and scientific invariants rather than only checking file presence.
+The public-source rebuild prints SHA-256 hashes for both commit-pinned CSV files and fails if the complete derived evidence or released metrics differ.
 
 ## Research bundle contents
 
-- `README.md` — study overview and bounded findings
-- `EMPIRICAL_STUDY.md` — protocol, validity, and interpretation
-- `data/source_manifest.json` — provenance, license note, and claim boundary
-- `data/derived/` — compact derived empirical tables
-- `results/empirical_summary.json` — machine-readable headline results
-- `scripts/fetch_and_analyze.py` — public-source rebuild
-- `research/model.py` — reusable study-specific analysis functions
-- `tests/` — behavioral and scientific-invariant tests
-- `docs/` — analysis plan, data dictionary, paper blueprint, references, originality map
-- `assets/` — four study-specific SVG figures
+- `data/derived/evaluation_observations.csv` — complete 571-row derived evaluation evidence
+- `data/derived/primary_results.csv` — five label-level confusion/F1 summaries
+- `data/derived/triage_results.csv` — oracle, prediction-only, and random-expected review curves
+- `results/empirical_summary.json` — machine-readable headline findings
+- `research/model.py` — evaluation and triage logic
+- `scripts/fetch_and_analyze.py` — pinned-source consistency check
+- `scripts/generate_figures.py` — reproducible SVG generation
+- `tests/` — scientific-invariant and deployability tests
+- `.github/workflows/` — CI and public-source rebuild checks
 
 ## Research integrity
 
-This bundle distinguishes **source data**, **operationalization**, **result**, and **interpretation**. The analysis plan documents the released analysis; it is **not described as preregistered**. Public data do not automatically validate a construct, so proxy and external-validity limits are explicit.
+The analysis is **not preregistered**. The prediction-only heuristic is explicitly exploratory and post hoc. The repository distinguishes source data, gold-label evaluation, oracle analysis, deployable ranking inputs, results, and interpretation.

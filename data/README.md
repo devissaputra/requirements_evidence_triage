@@ -1,11 +1,10 @@
 # Data
 
-**Primary source:** eTour fine-grained requirements-classification benchmark in the FTLR replication package
+Raw requirement text is not republished.
 
-**Source page:** https://github.com/tobhey/finegrained-traceability
+Pinned FTLR replication commit:
+`02682a0d3cb2fb991942c2d88d11e03221f30f87`
 
-**Reuse note:** Gold-standard requirements-classification dataset: CC BY 4.0 (Zenodo DOI 10.5281/zenodo.7867846). Automatic predictions are taken from the cited FTLR replication repository.
+Gold labels trace to Zenodo concept DOI 10.5281/zenodo.7867845 (versioned record 10.5281/zenodo.7867846). Automatic labels come from the corresponding NoRBERT/FTLR replication output.
 
-Raw source observations are not bundled here by default. Derived tables are packaged under `data/derived/`; their completeness or subset status is stated in `docs/data_dictionary.md`.
-
-**Construct boundary:** The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+Packaged evidence contains only derived evaluation outcomes, prediction patterns, aggregate metrics, and review-routing results.

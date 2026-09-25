@@ -1,5 +1,7 @@
 # Results
 
-`empirical_summary.json` contains the machine-readable headline metrics and the bounded release finding for **Requirements Classification Evidence Triage on a Gold-Standard Benchmark**.
+- `empirical_summary.json` contains bounded headline findings.
+- `data/derived/primary_results.csv` contains the five label-level confusion/F1 results.
+- `data/derived/triage_results.csv` separates oracle, prediction-only, and random-expected review performance.
 
-The JSON is generated/checked against the derived CSVs and study-specific analysis assumptions. It should not be edited independently of the data tables, documentation, tests, and figures.
+The 51.9% top-100 figure is an oracle upper bound. The deployable top-100 result is 21.5% versus 17.5% expected from uniform random review.

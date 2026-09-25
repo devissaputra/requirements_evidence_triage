@@ -1,8 +1,37 @@
 #!/usr/bin/env python3
-import csv,io,json,urllib.request
-from research.model import LABELS,confusion_metrics,disagreement_counts,review_capture
-BASE='https://raw.githubusercontent.com/tobhey/finegrained-traceability/diss_v1/datasets/eTour/'
-def get(name):return list(csv.DictReader(io.StringIO(urllib.request.urlopen(BASE+name).read().decode('utf-8-sig'))))
-gold=get('eTour_gold.csv'); pred=get('eTour_best.csv'); metrics=confusion_metrics(gold,pred); counts=disagreement_counts(gold,pred); capture=review_capture(counts)
-summary={'study':'Requirements Classification Evidence Triage on a Gold-Standard Benchmark','headline_metrics':{'n_requirement_elements':len(gold),'f1_function':round(metrics['Function']['f1'],3),'f1_behavior':round(metrics['Behavior']['f1'],3),'f1_data':round(metrics['Data']['f1'],3),'f1_F':round(metrics['F']['f1'],3),'f1_user_related':round(metrics['UserRelated']['f1'],3),'total_label_errors_across_5_fields':sum(counts),'top_100_review_error_capture_share':round(capture[100][1],3)},'finding':'Across the five evaluated labels, performance is heterogeneous: F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; prioritizing the 100 requirement elements with the most five-label disagreements concentrates 277 of them (51.9%), supporting targeted human review rather than uniform review.','source':'eTour requirements-classification benchmark (CoEST-derived; FTLR replication package)','retrieved':'2026-09-25'}
-print(json.dumps({'summary':summary,'metrics':metrics,'review_capture':{str(k):{'errors':v[0],'share':v[1]} for k,v in capture.items()}},indent=2))
+from __future__ import annotations
+import argparse,csv,hashlib,io,sys,urllib.request
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+from research.model import LABELS,build_evidence,confusion_metrics,review_capture
+
+SOURCE_COMMIT="02682a0d3cb2fb991942c2d88d11e03221f30f87"
+BASE=f"https://raw.githubusercontent.com/tobhey/finegrained-traceability/{SOURCE_COMMIT}/datasets/eTour/"
+
+def fetch(name):
+    payload=urllib.request.urlopen(BASE+name,timeout=30).read()
+    return list(csv.DictReader(io.StringIO(payload.decode("utf-8-sig")))),hashlib.sha256(payload).hexdigest()
+
+def primary_rows(metrics):
+    return [{"label":lab,"precision":round(metrics[lab]["precision"],3),"recall":round(metrics[lab]["recall"],3),"f1":round(metrics[lab]["f1"],3),"tp":metrics[lab]["tp"],"fp":metrics[lab]["fp"],"fn":metrics[lab]["fn"],"tn":metrics[lab]["tn"]} for lab in LABELS]
+
+def main():
+    ap=argparse.ArgumentParser();ap.add_argument("--check",action="store_true");args=ap.parse_args()
+    gold,gsha=fetch("eTour_gold.csv");pred,psha=fetch("eTour_best.csv")
+    evidence=build_evidence(gold,pred);primary=primary_rows(confusion_metrics(gold,pred));triage=review_capture(evidence)
+    print(f"source_commit: {SOURCE_COMMIT}");print(f"eTour_gold.csv sha256: {gsha}");print(f"eTour_best.csv sha256: {psha}")
+    if args.check:
+        with (ROOT/"data/derived/evaluation_observations.csv").open(newline="",encoding="utf-8") as f:pack_e=list(csv.DictReader(f))
+        expected_e=[{k:str(v) for k,v in r.items()} for r in evidence]
+        if pack_e!=expected_e:raise SystemExit("FAIL: complete derived evidence differs from pinned source")
+        with (ROOT/"data/derived/primary_results.csv").open(newline="",encoding="utf-8") as f:pack_p=list(csv.DictReader(f))
+        if pack_p!=[{k:str(v) for k,v in r.items()} for r in primary]:raise SystemExit("FAIL: primary results differ from pinned source")
+        with (ROOT/"data/derived/triage_results.csv").open(newline="",encoding="utf-8") as f:pack_t=list(csv.DictReader(f))
+        expected_t=[{"method":r["method"],"budget":str(r["budget"]),"errors_captured":str(r["errors_captured"]),"error_capture_share":str(r["error_capture_share"]),"enrichment_vs_random":str(r["enrichment_vs_random"]),"uses_gold_for_ranking":str(r["uses_gold_for_ranking"]).lower()} for r in triage]
+        if pack_t!=expected_t:raise SystemExit("FAIL: triage results differ from pinned source")
+        print("empirical_rebuild: PASS")
+    else:
+        print("rows:",len(evidence),"errors:",sum(int(r["label_errors"]) for r in evidence))
+
+if __name__=="__main__":main()

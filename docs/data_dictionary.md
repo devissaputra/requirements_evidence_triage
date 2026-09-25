@@ -1,16 +1,19 @@
 # Data Dictionary
 
-## Provenance
-See `data/source_manifest.json`. Raw source observations are not silently republished.
+## `evaluation_observations.csv`
+Complete 571-row derived evaluation evidence. It does not republish requirement text. Each row stores TP/FP/FN/TN outcomes for the five evaluated labels, the five-bit prediction pattern, pattern frequency, predicted-positive count, a prediction-only hierarchy flag, and total label-error count.
 
-## `data/derived/primary_results.csv`
-Complete confusion-matrix summary for the five evaluated labels; secondary table contains the full reported review-budget curve.
+## `primary_results.csv`
+Complete five-label confusion-matrix and precision/recall/F1 summary.
 
-## `data/derived/secondary_results.csv`
-When present and non-empty, this contains a second derived table needed to reproduce a reported comparison. If empty, no second packaged table is required.
+## `triage_results.csv`
+Review-budget results for:
+- `oracle_upper_bound`: gold-aware ranking;
+- `prediction_pattern_rarity`: prediction-only ranking;
+- `random_expected`: exact expectation under uniform random review.
 
-## `results/empirical_summary.json`
-Machine-readable headline sample sizes, estimates, and the release finding. Values must agree with README text and the derived CSVs.
+## `empirical_summary.json`
+Headline metrics and bounded interpretation.
 
-## Construct boundary
-The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+## Excluded columns
+`functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the automatic eTour file is degenerate for those fields.

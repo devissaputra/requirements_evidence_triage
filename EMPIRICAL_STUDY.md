@@ -3,25 +3,31 @@
 ## Study
 Requirements Classification Evidence Triage on a Gold-Standard Benchmark
 
-## Research question
-Where does automatic fine-grained requirement classification fail on a gold-standard benchmark, and how concentrated are those errors under a limited human-review budget?
+## Research questions
+1. How heterogeneous is five-label classification performance?
+2. How concentrated are observed errors under an oracle queue that knows the gold labels?
+3. Does a prediction-only pattern-rarity queue capture more errors than uniform random review on this benchmark?
 
-## Design and source
-Secondary benchmark evaluation with disagreement-priority human review. Source: eTour fine-grained requirements-classification benchmark in the FTLR replication package. Analysis/retrieval date: 2026-09-25.
+## Design
+Secondary benchmark analysis of 571 eTour requirement elements.
 
-## Hypotheses
-1. H1: classification quality differs substantially across the five evaluated labels (Function, Behavior, Data, F, UserRelated).
-2. H2: UserRelated evidence has materially lower recall than the broad F label.
-3. H3: disagreement-priority review captures a disproportionate share of five-label errors within a fixed review budget.
+## Source
+The release is pinned to FTLR replication commit `02682a0d3cb2fb991942c2d88d11e03221f30f87`. Gold labels trace to the requirements-classification dataset (Zenodo concept DOI 10.5281/zenodo.7867845; versioned record 10.5281/zenodo.7867846). Automatic labels are the NoRBERT/FTLR eTour predictions.
 
-## Operationalization and method
-Join gold-standard and automatic rows by requirement-element ID. For the five labels explicitly evaluated by the FTLR experiment (Function, Behavior, Data, F, UserRelated), compute confusion matrices and F1. Count per-element disagreements across those five labels, sort descending, and measure cumulative error capture at review budgets of 10, 25, 50, and 100 elements.
+## Primary classification estimand
+For Function, Behavior, Data, F, and UserRelated, compute TP, FP, FN, TN, precision, recall, and F1 after joining gold and automatic rows by ID.
 
-## Primary empirical result
-Across the five evaluated labels, F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; reviewing the 100 elements with the most five-label disagreements concentrates 277 of them (51.9%).
+## Oracle review analysis
+For each requirement element, count gold-vs-prediction disagreements across the five labels and sort descending. This uses gold labels and is therefore interpreted only as an oracle upper bound on error concentration.
 
-## Validity and claim boundary
-The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+## Deployable exploratory triage
+Rank items using only automatic predictions: rarer five-label prediction patterns first, then prediction-only hierarchy inconsistency, predicted positive-label count, and ID as deterministic tie-breakers. Gold labels are used only after ranking to measure captured errors.
 
-## Reproducibility status
-The repository packages derived results, study-specific analysis functions, deterministic or seeded procedures where relevant, an internet-enabled source rebuild script, and tests for both computations and critical scientific invariants. The released analysis was documented after dataset selection and should not be represented as preregistered.
+## Random-review comparator
+For uniform random review of k out of N=571 items, expected captured error share is k/N.
+
+## Result
+F1 spans 0.653–0.945. There are 534 label errors. At budget 100, the oracle captures 277 errors (51.9%); the prediction-only heuristic captures 115 (21.5%); uniform random review has expected share 17.5%.
+
+## Validity boundary
+The prediction-only heuristic is post hoc, batch-dependent, and not externally validated. This is a requirement-element benchmark study, not end-to-end physical-system verification.

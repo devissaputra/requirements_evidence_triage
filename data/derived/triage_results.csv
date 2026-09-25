@@ -1,0 +1,13 @@
+method,budget,errors_captured,error_capture_share,enrichment_vs_random,uses_gold_for_ranking
+oracle_upper_bound,10,38,0.071,4.063,true
+prediction_pattern_rarity,10,18,0.034,1.925,false
+random_expected,10,9.352,0.018,1,false
+oracle_upper_bound,25,83,0.155,3.55,true
+prediction_pattern_rarity,25,34,0.064,1.454,false
+random_expected,25,23.38,0.044,1,false
+oracle_upper_bound,50,158,0.296,3.379,true
+prediction_pattern_rarity,50,65,0.122,1.39,false
+random_expected,50,46.76,0.088,1,false
+oracle_upper_bound,100,277,0.519,2.962,true
+prediction_pattern_rarity,100,115,0.215,1.23,false
+random_expected,100,93.52,0.175,1,false

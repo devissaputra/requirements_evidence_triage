@@ -1,23 +1,23 @@
 # Final QA Report
 
-**Release status: PASS after correction.**
+**Release status: PENDING GITHUB-HOSTED VERIFICATION AFTER REPAIR.**
 
-## Checks completed
-- provenance and source identity reviewed;
-- licensing/reuse note recorded;
-- derived CSV structure checked against the stated sample and estimand;
-- `results/empirical_summary.json` reconciled with packaged evidence;
-- README/report language reconciled with the numerical results;
-- study-specific methods moved into `research/model.py`;
-- tests exercise scientific logic and invariants;
-- internet rebuild script has no synthetic fallback;
-- four SVG assets regenerated as study-specific figures and XML-validated;
-- local Markdown links checked;
-- citation metadata points to the final repository slug;
-- no preregistration claim is made.
+## Repairs completed
+- corrected gold-label leakage in the interpretation of review prioritization;
+- retained the 51.9% result only as an oracle upper bound;
+- added prediction-only pattern-rarity triage and exact random expectation;
+- packaged complete 571-row derived evaluation evidence;
+- expanded tests across all confusion matrices and triage curves;
+- pinned the FTLR source to commit `02682a0d3cb2fb991942c2d88d11e03221f30f87`;
+- added SHA-256 reporting during source rebuild;
+- added CI and empirical-source rebuild workflows;
+- added reproducible figure generation and corrected misleading figures;
+- restored the complete standard MIT license;
+- removed stale portfolio references;
+- expanded scholarly positioning and synchronized all research documentation.
 
-## Final empirical finding
-Across the five evaluated labels, F1 ranges from 0.653 for UserRelated to 0.945 for F. There are 534 label disagreements in total; reviewing the 100 elements with the most five-label disagreements concentrates 277 of them (51.9%).
+## Release numbers
+571 elements; 534 five-label errors; F1 range 0.653–0.945; oracle top-100 51.9%; prediction-only top-100 21.5%; random expected 17.5%; prediction-only enrichment 1.23×.
 
-## Required interpretation boundary
-The benchmark evaluates requirement-element classification, not end-to-end physical-system verification. The four additional fields in the CSVs (functional, OnlyF, OnlyQ, Q) are excluded from the triage estimand because the supplied eTour automatic file is degenerate for those fields (all-zero outputs), so treating them as ordinary predictions would inflate disagreement counts and misstate the classifier output.
+## Release condition
+Mark PASS after CI and empirical-source rebuild both succeed on this repaired commit.
