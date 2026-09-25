@@ -1,33 +1,111 @@
 # Empirical Study Protocol
 
-## Study
-Requirements Classification Evidence Triage on a Gold-Standard Benchmark
+## Study title
+
+**Requirements Classification Evidence Triage on a Gold Standard Benchmark**
+
+## Study type
+
+Secondary benchmark evaluation with human review routing analysis.
+
+This document records the released analysis and is not a preregistration.
 
 ## Research questions
-1. How heterogeneous is five-label classification performance?
-2. How concentrated are observed errors under an oracle queue that knows the gold labels?
-3. Does a prediction-only pattern-rarity queue capture more errors than uniform random review on this benchmark?
 
-## Design
-Secondary benchmark analysis of 571 eTour requirement elements.
+**RQ1.** How heterogeneous is classification performance across Function, Behavior, Data, F, and UserRelated?
 
-## Source
-The release is pinned to FTLR replication commit `02682a0d3cb2fb991942c2d88d11e03221f30f87`. Gold labels trace to the requirements-classification dataset (Zenodo concept DOI 10.5281/zenodo.7867845; versioned record 10.5281/zenodo.7867846). Automatic labels are the NoRBERT/FTLR eTour predictions.
+**RQ2.** How concentrated are observed label errors under a gold aware oracle queue?
 
-## Primary classification estimand
-For Function, Behavior, Data, F, and UserRelated, compute TP, FP, FN, TN, precision, recall, and F1 after joining gold and automatic rows by ID.
+**RQ3.** Can a prediction only ranking capture more errors than uniform random review on the same benchmark?
 
-## Oracle review analysis
-For each requirement element, count gold-vs-prediction disagreements across the five labels and sort descending. This uses gold labels and is therefore interpreted only as an oracle upper bound on error concentration.
+## Data pairing
 
-## Deployable exploratory triage
-Rank items using only automatic predictions: rarer five-label prediction patterns first, then prediction-only hierarchy inconsistency, predicted positive-label count, and ID as deterministic tie-breakers. Gold labels are used only after ranking to measure captured errors.
+Gold and automatic rows are joined by the 571 shared requirement IDs from the pinned eTour artifacts.
 
-## Random-review comparator
-For uniform random review of k out of N=571 items, expected captured error share is k/N.
+The release does not redistribute raw requirement text.
 
-## Result
-F1 spans 0.653–0.945. There are 534 label errors. At budget 100, the oracle captures 277 errors (51.9%); the prediction-only heuristic captures 115 (21.5%); uniform random review has expected share 17.5%.
+## Evaluated labels
 
-## Validity boundary
-The prediction-only heuristic is post hoc, batch-dependent, and not externally validated. This is a requirement-element benchmark study, not end-to-end physical-system verification.
+Function, Behavior, Data, F, and UserRelated.
+
+The fields `functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the available automatic eTour output is degenerate for those fields.
+
+## Classification estimand
+
+For each included label, compute:
+
+- true positives;
+- false positives;
+- false negatives;
+- true negatives;
+- precision;
+- recall;
+- F1.
+
+## Error unit
+
+A label error is one false positive or one false negative for one requirement and one evaluated label.
+
+Because each requirement has five evaluated labels, one requirement can contribute multiple label errors.
+
+## Oracle diagnostic
+
+For each requirement element, count the number of disagreements between gold and automatic labels across the five evaluated fields.
+
+Rank items by descending disagreement count.
+
+This ranking uses gold labels and is therefore interpreted only as an oracle upper bound on possible error concentration.
+
+## Prediction only review routing
+
+Construct the operational ranking without gold outcomes.
+
+Ordering is:
+
+1. lower prediction pattern frequency;
+2. hierarchy violation first;
+3. higher predicted positive label count;
+4. ID for deterministic tie breaking.
+
+A hierarchy violation occurs when Function, Behavior, or Data is predicted positive while F is predicted negative.
+
+Gold labels are used only after ranking to calculate captured errors.
+
+## Random comparator
+
+For simple uniform review of k out of 571 items, the expected share of total label errors captured is k / 571.
+
+## Released budgets
+
+10, 25, 50, and 100 requirement elements.
+
+## Released findings
+
+Classification F1 ranges from 0.653 to 0.945.
+
+There are 534 label level errors across the five evaluated labels.
+
+At budget 100:
+
+- oracle captures 277 errors, or 51.9%;
+- prediction only rarity captures 115 errors, or 21.5%;
+- uniform random review has expected capture share 17.5%;
+- prediction only enrichment versus random expectation is 1.23×.
+
+## Interpretation rule
+
+The oracle result quantifies error concentration but is not an operational policy.
+
+The prediction only result is a benchmark specific exploratory routing result. It is not interpreted as optimal or externally validated.
+
+## Validity boundaries
+
+The benchmark gold labels are treated as reference truth.
+
+No reviewer cost, error severity, downstream correction benefit, uncertainty calibration, or cross dataset validation is modeled.
+
+The prediction rarity rule is batch dependent and post hoc.
+
+## Reproducibility
+
+The release contains complete derived evidence, exact source pinning, deterministic analysis functions, confusion matrices, review curves, tests, CI, source rebuild checks, and reproducible SVG generation.
