@@ -101,3 +101,5 @@ def validate_bundle():
             if abs(float(a[key])-float(b[key]))>1e-9:return False
     s=load_summary()["headline_metrics"]
     return s["n_requirement_elements"]==571 and s["total_label_errors_across_5_fields"]==534 and s["oracle_top_100_error_capture_share"]==0.519 and s["deployable_top_100_error_capture_share"]==0.215 and s["random_expected_top_100_error_capture_share"]==0.175 and s["deployable_top_100_enrichment_vs_random"]==1.23
+
+# Release verification is enforced by GitHub Actions.
