@@ -1,19 +1,74 @@
 # Data Dictionary
 
-## `evaluation_observations.csv`
-Complete 571-row derived evaluation evidence. It does not republish requirement text. Each row stores TP/FP/FN/TN outcomes for the five evaluated labels, the five-bit prediction pattern, pattern frequency, predicted-positive count, a prediction-only hierarchy flag, and total label-error count.
+## Evaluation evidence
 
-## `primary_results.csv`
-Complete five-label confusion-matrix and precision/recall/F1 summary.
+### `data/derived/evaluation_observations.csv`
 
-## `triage_results.csv`
-Review-budget results for:
-- `oracle_upper_bound`: gold-aware ranking;
-- `prediction_pattern_rarity`: prediction-only ranking;
-- `random_expected`: exact expectation under uniform random review.
+Complete 571 row derived evaluation table. Raw requirement text is not included.
 
-## `empirical_summary.json`
-Headline metrics and bounded interpretation.
+Each row contains:
 
-## Excluded columns
-`functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the automatic eTour file is degenerate for those fields.
+- `ID`: requirement identifier;
+- one outcome field per evaluated label, coded TP, FP, FN, or TN;
+- `predicted_pattern`: five bit automatic prediction pattern in label order;
+- `pattern_frequency`: frequency of that prediction pattern in the 571 item batch;
+- `predicted_positive_count`: number of predicted positive labels;
+- `hierarchy_violation`: prediction only inconsistency flag;
+- `label_errors`: number of FP plus FN outcomes across the five labels.
+
+## Label order
+
+The prediction pattern uses:
+
+1. Function
+2. Behavior
+3. Data
+4. F
+5. UserRelated
+
+## Hierarchy flag
+
+`hierarchy_violation = 1` when Function, Behavior, or Data is predicted positive while F is predicted negative.
+
+The flag is constructed only from automatic predictions.
+
+## Primary classification results
+
+### `data/derived/primary_results.csv`
+
+One row per evaluated label with:
+
+- precision;
+- recall;
+- F1;
+- TP;
+- FP;
+- FN;
+- TN.
+
+## Review results
+
+### `data/derived/triage_results.csv`
+
+One row per method and review budget with:
+
+- `method`;
+- `budget`;
+- `errors_captured`;
+- `error_capture_share`;
+- `enrichment_vs_random`;
+- `uses_gold_for_ranking`.
+
+Methods:
+
+- `oracle_upper_bound`;
+- `prediction_pattern_rarity`;
+- `random_expected`.
+
+## Error unit
+
+`label_errors` counts label level disagreements. It is not a binary indicator that the entire requirement is wrong.
+
+## Excluded source fields
+
+`functional`, `OnlyF`, `OnlyQ`, and `Q` are excluded because the automatic eTour artifact is degenerate for these fields.
