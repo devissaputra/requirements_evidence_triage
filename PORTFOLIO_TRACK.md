@@ -1,12 +1,12 @@
 # Portfolio Track
 
-**Track:** Engineering Management Research  
+**Portfolio track:** Engineering Management Research  
+**Public presentation:** Research in System Engineering  
 **Repository:** `requirements_evidence_triage`  
-**Focus:** Systems Engineering / Requirements Engineering / Human Review
+**Focus:** Requirements Engineering / Human Review Allocation / Evidence Triage
 
-This classification is part of an eight-repository empirical research portfolio with an intentional 4+4 split:
+This repository is one of the Engineering Management Research projects in the empirical research portfolio.
 
-- **4 repositories:** Learning & Development Research
-- **4 repositories:** Engineering Management Research
+On the public portfolio site, it is presented under **Research in System Engineering** because it studies requirements classification evidence as a review allocation and decision support problem.
 
-This repository belongs only to **Engineering Management Research** for portfolio indexing and GitHub presentation. Its methods may draw on adjacent disciplines, but that does not change its primary portfolio track.
+The portfolio track and public research heading serve different purposes and are intentionally both retained.
